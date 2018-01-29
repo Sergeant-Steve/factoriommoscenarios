@@ -11,3 +11,11 @@ require "lualib/modular_tag/modular_tag" --Module to let players set a tag behin
 require "lualib/modular_admin/modular_admin" --New admin tools -untested
 require "lualib/modular_information/modular_information" --New player information system -untested
 require "equipment"
+
+Event.register(-1, function(Event)
+	game.surfaces[1].dusk = -1.1667
+	game.surfaces[1].evening = 0.5
+	game.surfaces[1].morning = 0.5001
+	game.surfaces[1].dawn = 2.1667
+	global.modular_information_scenario.text  = "It's dark. Make a base.\nHard to fight biters in the dark. Hard to charge your armour in the dark.\nHowever, it's not impossible, nearly none of the night is in 'full darkness'."
+end)

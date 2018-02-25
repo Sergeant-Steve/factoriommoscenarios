@@ -10,7 +10,7 @@ require "lualib/bot"	--3ra shit
 require "lualib/modular_tag/modular_tag" --Module to let players set a tag behind their names to improve teamwork, also allows other modules to get (and use) its canvas.
 require "lualib/modular_admin/modular_admin" --New admin tools
 require "lualib/modular_information/modular_information" --New player information system
-require "lualib/antigrief.lua" --untested
+require "lualib/antigrief" --untested
 require "equipment"
 
 require "debug"

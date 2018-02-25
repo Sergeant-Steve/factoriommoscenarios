@@ -52,7 +52,7 @@ function modular_tag_patreon_create_gui(event)
 	local mtgf = modular_tag_get_frame(p)
 	local mtf
 	if mtgf.modular_tag_patreon_flow ~= nil and mtgf.modular_tag_patreon_flow.valid then
-		mtf = mtgf.mtgf.modular_tag_patreon_flow
+		mtf = mtgf.modular_tag_patreon_flow
 	else
 		mtf = mtgf.add {type = "flow", direction = "vertical", name = "modular_tag_patreon_flow", style = "slot_table_spacing_vertical_flow"}
 	end

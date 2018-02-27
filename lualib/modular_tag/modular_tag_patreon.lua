@@ -56,7 +56,7 @@ function modular_tag_patreon_create_gui(event)
 	else
 		mtf = mtgf.add {type = "flow", direction = "vertical", name = "modular_tag_patreon_flow", style = "slot_table_spacing_vertical_flow"}
 	end
-	if mtf.modular_tag_patreon_unique_button ~= nil and mtf.modular_tag_unique_button.valid then
+	if mtf.modular_tag_patreon_unique_button ~= nil and mtf.modular_tag_patreon_unique_button.valid then
 	
 	else
 		local b2 = mtf.add {type = "button", name = "modular_tag_patreon_unique_button", caption = "Unique"}

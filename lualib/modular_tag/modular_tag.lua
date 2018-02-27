@@ -11,6 +11,8 @@ require "modular_tag_patreon"
 global.modular_tag.tags = {
 	{ display_name = "Clear", color = {r=1,g=0,b=0} },
 	{ display_name = "Mining" },
+	{ display_name = "Lumberjack" },
+	{ display_name = "Fishing" },
 	{ display_name = "Oil" },
 	{ display_name = "Bus" },
 	{ display_name = "Smelting" },
@@ -18,6 +20,7 @@ global.modular_tag.tags = {
 	{ display_name = "Automation" },
 	{ display_name = "Quality Control" },
 	{ display_name = "Power" },
+	{ display_name = "Lights" },
 	{ display_name = "Trains" },
 	{ display_name = "Science" },
 	{ display_name = "Robotics"},

@@ -17,6 +17,8 @@
 --
 
 global.modular_information = global.modular_information or {}
+global.modular_information.button_must_be_selected = true
+
 global.modular_information.raw = global.modular_information.raw or {}
 global.modular_information.sorted = global.modular_information.sorted or {}
 global.modular_information.modules = global.modular_information.modules or {} 
@@ -217,8 +219,10 @@ function modular_information_gui_clicked(event)
 end
 
 function modular_information_set_active_button(p, b)
-	global.modular_information.active_button[p.name] = b
-	modular_information_gui_changed(p)
+	if not (global.modular_information.button_must_be_selected and b == "none") then
+		global.modular_information.active_button[p.name] = b
+		modular_information_gui_changed(p)
+	end
 end
 
 function modular_information_set_information_pane_caption(p, c)

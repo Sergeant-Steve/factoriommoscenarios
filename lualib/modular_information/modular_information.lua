@@ -109,13 +109,16 @@ function modular_information_get_menu(p)
 		mims.style.left_padding = 0
 		mims.style.right_padding = 0
 		mims.style.bottom_padding = 0
-		mims.style.maximal_height = 200
+		mims.style.maximal_height = 175
+		mims.style.minimal_height = 175
 		mimt = mims.add {name = "modular_information_menu_table", type = "table", column_count = 1}
 		mimt.style.vertical_spacing = 0
 		mimt.style.top_padding = 0
 		mimt.style.left_padding = 0
 		mimt.style.right_padding = 0
 		mimt.style.bottom_padding = 0
+		local mict = mim.add {name = "modular_information_close_text", type = "label", caption = "Close Menu"}
+		mict.style.font_color = {r=1,g=0,b=0}
 	end
 	return mimt
 end
@@ -207,7 +210,7 @@ function modular_information_gui_clicked(event)
 	local p = game.players[i]
 	local e = event.element
 	if e ~= nil then
-		if e.name == "modular_information_toggle_button" then
+		if e.name == "modular_information_toggle_button" or e.name == "modular_information_close_text" then
 			modular_information_gui_toggle_visibility(p)
 		end
 	end

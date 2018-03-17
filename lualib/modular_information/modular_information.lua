@@ -1,6 +1,6 @@
 -- modular_information Module
 -- Made by: I_IBlackI_I (Blackstone#4953 on discord) for FactorioMMO
--- This module allows the admin tools to be easily expandable
+-- This module allows the information tools to be easily expandable
 
 --
 --	At the bottom of this file there is a list of sub-modules you can enable.
@@ -18,6 +18,14 @@
 
 global.modular_information = global.modular_information or {}
 global.modular_information.button_must_be_selected = true
+global.modular_information.use_sprite_button_open = true
+global.modular_information.use_sprite_button_close = false
+global.modular_information.sprite_button_open_sprite = "utility/side_menu_tutorials_icon"
+global.modular_information.sprite_button_close_sprite = "utility/side_menu_tutorials_icon"
+global.modular_information.sprite_button_open_tooltip = "Open information menu"
+global.modular_information.sprite_button_close_tooltip = "Close information menu"
+global.modular_information.button_open_caption = "Open Information Screen"
+global.modular_information.button_close_caption = "Close Information Screen"
 
 global.modular_information.raw = global.modular_information.raw or {}
 global.modular_information.sorted = global.modular_information.sorted or {}
@@ -163,16 +171,22 @@ end
 
 function modular_information_gui_show(p)
 	global.modular_information.visible[p.name] = true
-	topgui_change_button_caption(p.name, "modular_information_toggle_button", "Close Information Screen")
-	topgui_change_button_color(p.name, "modular_information_toggle_button", {r=1, g=0, b=0})
+	if global.modular_information.use_sprite_button_close then
+		topgui_add_button(p.name, {type="sprite-button", name = "modular_information_toggle_button", sprite = global.modular_information.sprite_button_close_sprite, tooltip=global.modular_information.sprite_button_close_tooltip})
+	else 
+		topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = global.modular_information.button_close_caption, color = {r=1, g=0, b=0}})
+	end
 	local mif = modular_information_get_flow(p)
 	mif.style.visible = global.modular_information.visible[p.name]
 end
 
 function modular_information_gui_hide(p)
 	global.modular_information.visible[p.name] = false
-	topgui_change_button_caption(p.name, "modular_information_toggle_button", "Open Information Screen")
-	topgui_change_button_color(p.name, "modular_information_toggle_button", {r=0, g=1, b=0})
+	if global.modular_information.use_sprite_button_open then
+		topgui_add_button(p.name, {type="sprite-button", name = "modular_information_toggle_button", sprite = global.modular_information.sprite_button_open_sprite, tooltip=global.modular_information.sprite_button_open_tooltip})
+	else 
+		topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = global.modular_information.button_open_caption, color = {r=0, g=1, b=0}})
+	end
 	local mif = modular_information_get_flow(p)
 	mif.style.visible = global.modular_information.visible[p.name]
 end
@@ -271,10 +285,18 @@ Event.register(defines.events.on_player_joined_game, function(event)
 	global.modular_information.active_button[p.name] = global.modular_information.active_button[p.name] or "none"
 	modular_information_gui_changed(p)
 	if global.modular_information.visible[p.name] then
-		topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = "Close Information Screen", color = {r=1, g=0, b=0}})
-	else
-		topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = "Open Information Screen", color = {r=0, g=1, b=0}})
-	end
+		if global.modular_information.use_sprite_button_close then
+				topgui_add_button(p.name, {type="sprite-button", name = "modular_information_toggle_button", sprite = global.modular_information.sprite_button_close_sprite, tooltip=global.modular_information.sprite_button_close_tooltip})
+			else 
+				topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = global.modular_information.button_close_caption, color = {r=1, g=0, b=0}})
+			end
+		else
+			if global.modular_information.use_sprite_button_open then
+				topgui_add_button(p.name, {type="sprite-button", name = "modular_information_toggle_button", sprite = global.modular_information.sprite_button_open_sprite, tooltip=global.modular_information.sprite_button_open_tooltip})
+			else 
+				topgui_add_button(p.name, {name = "modular_information_toggle_button", caption = global.modular_information.button_open_caption, color = {r=0, g=1, b=0}})
+			end
+		end
 	modular_information_get_information_pane(p)
 end)
 

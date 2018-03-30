@@ -71,7 +71,10 @@ function modular_admin_players_gui_clicked(event)
 			if not (e.valid) then return end
 			for _, player in pairs(game.connected_players) do
 				if e.name == "modular_admin_players_label_player_list_teleport_" .. player.name then
-					p.teleport(player.position)
+					local a = player.position.x + 0.1
+					local b = player.position.y + 0.1
+					local position = {x = a, y = b}
+					p.teleport(position)
 				elseif e.name == "modular_admin_players_label_player_list_follow_" .. player.name then
 					if modular_admin_submodule_state("modular_admin_spectate_follow") then
 						modular_admin_spectate_set_spectator(p)

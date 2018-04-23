@@ -46,12 +46,10 @@ function modular_tag_patreon_on_gui_click(event)
 	end
 end
 
-function modular_tag_patreon_create_gui(event)
-	local player = game.players[event.player_index]
-	local p = player
+function modular_tag_patreon_create_gui(p)
 	local mtgf = modular_tag_get_frame(p)
 	local mtf
-	if mtgf.modular_tag_patreon_flow ~= nil and mtgf.modular_tag_patreon_flow.valid then
+		if mtgf.modular_tag_patreon_flow ~= nil and mtgf.modular_tag_patreon_flow.valid then
 		mtf = mtgf.modular_tag_patreon_flow
 	else
 		mtf = mtgf.add {type = "flow", direction = "vertical", name = "modular_tag_patreon_flow", style = "slot_table_spacing_vertical_flow"}
@@ -70,10 +68,23 @@ function modular_tag_patreon_create_gui(event)
 		b1.style.font_color = {r=0.2, g=0.7, b=1}
 		b1.style.minimal_width = 155
 	end
-	
-	
 end
 
+function modular_tag_patreon_check(player)
+	for _, patreon in pairs(global.modular_tag_patreon.patreons) do
+		if(player.name == patreon.name) then
+			return true
+		end
+	end
+	return false
+end
+
+function modular_tag_patreon_joined(event)
+	local player = game.players[event.player_index]
+	if(modular_tag_patreon_check(player)) then
+		modular_tag_patreon_create_gui(player)
+	end
+end
 
 Event.register(defines.events.on_gui_click, modular_tag_patreon_on_gui_click)
-Event.register(defines.events.on_player_joined_game, modular_tag_patreon_create_gui)
+Event.register(defines.events.on_player_joined_game, modular_tag_patreon_joined)

@@ -13,4 +13,5 @@ require "lualib/modular_information/modular_information" --New player informatio
 require "lualib/antigrief" --untested
 require "equipment"
 
+require "wg_jungle"
 require "debug"

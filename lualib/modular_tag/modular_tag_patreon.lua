@@ -22,7 +22,9 @@ global.modular_tag_patreon.patreons = {
 		{name = "Zirr", tag = nil},
 		{name = "Nr42", tag = nil},
 		{name = "zerot", tag = nil},
-		{name = "tzwaan", tag = "Educated Smartass"}
+		{name = "tzwaan", tag = "Educated Smartass"},
+		{name = "Lazyboy38", tag = "Lazy German"},
+		{name = "SpennyDurp", tag = "I WILL Break It"}
 }
 
 function modular_tag_patreon_on_gui_click(event)

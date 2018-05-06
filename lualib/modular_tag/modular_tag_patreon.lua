@@ -27,6 +27,7 @@ global.modular_tag_patreon.patreons = {
 		{name = "Blooper", tag = "Reliability Engineer"},
 		{name = "exi2163", tag = "Solution Engineer"},
 		{name = "Kodikuu", tag = "Tinkerer"},
+		{name = "Twinsen", tag = "Factorio Developer"},
 		{name = "SpennyDurp", tag = "I WILL Break It"}
 }
 

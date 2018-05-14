@@ -4,31 +4,31 @@
 
 global.modular_tag_patreon = global.modular_tag_patreon or {}
 global.modular_tag_patreon.patreons = {
-		{name = "I_IBlackI_I", tag = "Lua Hero"},
-		{name = "psihius", tag = "SysAdmin"},
-		{name = "Hornwitser", tag = "MoneyBags"},
-		{name = "jordank321", tag = "Im not sure LMAO"},
-		{name = "viceroypenguin", tag = "MoneyBags"},
-		{name = "sikian", tag = "Sikjizz!"},
-		{name = "Lyfe", tag = "Is Alive"},
-		{name = "sniperczar", tag = "Behemoth Bait"},
-		{name = "i-l-i", tag = "Space Dolphin"},
-		{name = "Uriopass", tag = "Ratio Maniac"},
-		{name = "audigex", tag = "Spaghetti Monster"},
-		{name = "Sergeant_Steve", tag = "Biter Killer"},
-		{name = "Zr4g0n", tag = "Totally not a dragon!"},
-		{name = "LordKiwi", tag = nil},
-		{name = "stik", tag = nil},
-		{name = "Zirr", tag = nil},
-		{name = "Nr42", tag = nil},
-		{name = "zerot", tag = nil},
-		{name = "tzwaan", tag = "Educated Smartass"},
-		{name = "Lazyboy38", tag = "Lazy German"},
-		{name = "Blooper", tag = "Reliability Engineer"},
-		{name = "exi2163", tag = "Solution Engineer"},
-		{name = "Kodikuu", tag = "Tinkerer"},
-		{name = "Twinsen", tag = "Factorio Developer"},
-		{name = "SpennyDurp", tag = "I WILL Break It"}
+		{name = "I_IBlackI_I", tag = "Lua Hero", color = nil},
+		{name = "psihius", tag = "SysAdmin", color = nil},
+		{name = "Hornwitser", tag = "MoneyBags", color = nil},
+		{name = "jordank321", tag = "Im not sure LMAO", color = nil},
+		{name = "viceroypenguin", tag = "MoneyBags", color = nil},
+		{name = "sikian", tag = "Sikjizz!", color = nil},
+		{name = "Lyfe", tag = "Is Alive", color = nil},
+		{name = "sniperczar", tag = "Behemoth Bait", color = nil},
+		{name = "i-l-i", tag = "Space Dolphin", color = nil},
+		{name = "Uriopass", tag = "Ratio Maniac", color = nil},
+		{name = "audigex", tag = "Spaghetti Monster", color = nil},
+		{name = "Sergeant_Steve", tag = "Biter Killer", color = nil},
+		{name = "Zr4g0n", tag = "Totally not a dragon!", color = {r=0.35,g=0.4,b=1.0}},
+		{name = "LordKiwi", tag = nil, color = nil},
+		{name = "stik", tag = nil, color = nil},
+		{name = "Zirr", tag = nil, color = nil},
+		{name = "Nr42", tag = nil, color = nil},
+		{name = "zerot", tag = nil, color = nil},
+		{name = "tzwaan", tag = "Educated Smartass", color = nil},
+		{name = "Lazyboy38", tag = "Lazy German", color = nil},
+		{name = "Blooper", tag = "Reliability Engineer", color = nil},
+		{name = "exi2163", tag = "Solution Engineer", color = nil},
+		{name = "Kodikuu", tag = "Tinkerer", color = nil},
+		{name = "Twinsen", tag = "Factorio Developer", color = nil},
+		{name = "SpennyDurp", tag = "I WILL Break It", color = nil}
 }
 
 function modular_tag_patreon_on_gui_click(event)
@@ -47,6 +47,12 @@ function modular_tag_patreon_on_gui_click(event)
 					player.print("Your unique tag has been applied!")
 				else 
 					player.print("O.o It seems you don't have a unique tag.. Please contact the admins to get one.")
+				end
+				if(patreon.color ~= nil) then
+					player.color = patreon.color
+					player.print("Your unique color has been applied automatically!")
+				else 
+					player.print("o.O It seems you don't have a unique color.. Please contact the admins to get one.")
 				end
 			end
 		end

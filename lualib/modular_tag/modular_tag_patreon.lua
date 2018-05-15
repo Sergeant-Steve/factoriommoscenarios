@@ -4,31 +4,31 @@
 
 global.modular_tag_patreon = global.modular_tag_patreon or {}
 global.modular_tag_patreon.patreons = {
-		{name = "I_IBlackI_I", tag = "Lua Hero", color = nil},
-		{name = "psihius", tag = "SysAdmin", color = nil},
-		{name = "Hornwitser", tag = "MoneyBags", color = nil},
-		{name = "jordank321", tag = "Im not sure LMAO", color = nil},
-		{name = "viceroypenguin", tag = "MoneyBags", color = nil},
-		{name = "sikian", tag = "Sikjizz!", color = nil},
-		{name = "Lyfe", tag = "Is Alive", color = nil},
-		{name = "sniperczar", tag = "Behemoth Bait", color = nil},
-		{name = "i-l-i", tag = "Space Dolphin", color = nil},
-		{name = "Uriopass", tag = "Ratio Maniac", color = nil},
-		{name = "audigex", tag = "Spaghetti Monster", color = nil},
-		{name = "Sergeant_Steve", tag = "Biter Killer", color = nil},
-		{name = "Zr4g0n", tag = "Totally not a dragon!", color = {r=0.35,g=0.4,b=1.0}},
-		{name = "LordKiwi", tag = nil, color = nil},
-		{name = "stik", tag = nil, color = nil},
-		{name = "Zirr", tag = nil, color = nil},
-		{name = "Nr42", tag = nil, color = nil},
-		{name = "zerot", tag = nil, color = nil},
-		{name = "tzwaan", tag = "Educated Smartass", color = nil},
-		{name = "Lazyboy38", tag = "Lazy German", color = nil},
-		{name = "Blooper", tag = "Reliability Engineer", color = nil},
-		{name = "exi2163", tag = "Solution Engineer", color = nil},
-		{name = "Kodikuu", tag = "Tinkerer", color = nil},
-		{name = "Twinsen", tag = "Factorio Developer", color = nil},
-		{name = "SpennyDurp", tag = "I WILL Break It", color = nil}
+		{name = "I_IBlackI_I", tag = "Lua Hero", color = {r=1.0,g=1.0,b=1.0}, chat_color = nil},
+		{name = "psihius", tag = "SysAdmin", color = nil, chat_color = nil},
+		{name = "Hornwitser", tag = "MoneyBags", color = nil, chat_color = nil},
+		{name = "jordank321", tag = "Im not sure LMAO", color = nil, chat_color = nil},
+		{name = "viceroypenguin", tag = "MoneyBags", color = nil, chat_color = nil},
+		{name = "sikian", tag = "Sikjizz!", color = nil, chat_color = nil},
+		{name = "Lyfe", tag = "Is Alive", color = { r = 0.559, g = 0.761, b = 0.157, a = 0.5 }, chat_color = { r = 0.708, g = 0.996, b = 0.134, a = 0.5}},
+		{name = "sniperczar", tag = "Behemoth Bait", color = nil, chat_color = nil},
+		{name = "i-l-i", tag = "Space Dolphin", color = nil, chat_color = nil},
+		{name = "Uriopass", tag = "Ratio Maniac", color = nil, chat_color = nil},
+		{name = "audigex", tag = "Spaghetti Monster", ccolor = nil, chat_color = nil},
+		{name = "Sergeant_Steve", tag = "Biter Killer", color = nil, chat_color = nil},
+		{name = "Zr4g0n", tag = "Totally not a dragon!", color = { r = 0.227, g = 0.263, b = 0.639}, chat_color = { r = 0.455, g = 0.506, b = 0.871}},
+		{name = "LordKiwi", tag = nil, color = nil, chat_color = nil},
+		{name = "stik", tag = nil, color = nil, chat_color = nil},
+		{name = "Zirr", tag = nil, color = nil, chat_color = nil},
+		{name = "Nr42", tag = nil, color = nil, chat_color = nil},
+		{name = "zerot", tag = nil, color = nil, chat_color = nil},
+		{name = "tzwaan", tag = "Educated Smartass", color = { r = 0.275, g = 0.755, b = 0.712, a = 0.5 }, chat_color = { r = 0.335, g = 0.918, b = 0.866, a = 0.5}},
+		{name = "Lazyboy38", tag = "Lazy German", color = nil, chat_color = nil},
+		{name = "Blooper", tag = "Reliability Engineer", color = nil, chat_color = nil},
+		{name = "exi2163", tag = "Solution Engineer", color = nil, chat_color = nil},
+		{name = "Kodikuu", tag = "Tinkerer", color = nil, chat_color = nil},
+		{name = "Twinsen", tag = "Factorio Developer", color = nil, chat_color = nil},
+		{name = "SpennyDurp", tag = "I WILL Break It", color = nil, chat_color = nil}
 }
 
 function modular_tag_patreon_on_gui_click(event)
@@ -50,9 +50,13 @@ function modular_tag_patreon_on_gui_click(event)
 				end
 				if(patreon.color ~= nil) then
 					player.color = patreon.color
-					player.print("Your unique color has been applied automatically!")
+					player.print("Your unique color has been applied!")
 				else 
-					player.print("o.O It seems you don't have a unique color.. Please contact the admins to get one.")
+					player.print("o.O It seems you don't have a unique player-color.. Please contact the admins to get one.")
+				end
+				if(patreon.color ~= nil) then
+					player.chat_color = patreon.chat_color
+					player.print("Your unique text-color has been applied!")
 				end
 			end
 		end
@@ -96,6 +100,26 @@ function modular_tag_patreon_joined(event)
 	local player = game.players[event.player_index]
 	if(modular_tag_patreon_check(player)) then
 		modular_tag_patreon_create_gui(player)
+	end
+	for i, patreon in pairs(global.modular_tag_patreon.patreons) do
+		if(player.name == patreon.name) then
+			if(patreon.tag ~= nil) then
+				player.tag = "[" .. patreon.tag .. "]"
+				player.print("Unique tag applied automagically!")
+			else 
+				player.print("O.o It seems you don't have a unique tag.. Please contact the admins to get one.")
+			end
+			if(patreon.color ~= nil) then
+				player.color = patreon.color
+				player.print("Unique color applied automagically!")
+			else 
+				player.print("o.O It seems you don't have a unique color.. Please contact the admins to get one.")
+			end
+			if(patreon.color ~= nil) then
+				player.chat_color = patreon.chat_color
+				player.print("Unique chat-color applied automagically!")
+			end
+		end
 	end
 end
 

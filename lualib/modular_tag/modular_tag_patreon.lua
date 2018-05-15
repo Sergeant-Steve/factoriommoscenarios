@@ -10,7 +10,7 @@ global.modular_tag_patreon.patreons = {
 		{name = "jordank321", tag = "Im not sure LMAO", color = nil, chat_color = nil},
 		{name = "viceroypenguin", tag = "MoneyBags", color = nil, chat_color = nil},
 		{name = "sikian", tag = "Sikjizz!", color = nil, chat_color = nil},
-		{name = "Lyfe", tag = "Is Alive", color = { r = 0.559, g = 0.761, b = 0.157, a = 0.5 }, chat_color = { r = 0.708, g = 0.996, b = 0.134, a = 0.5}},
+		{name = "Lyfe", tag = "Is Alive", color = { r = 0.559, g = 0.761, b = 0.157}, chat_color = { r = 0.708, g = 0.996, b = 0.134}},
 		{name = "sniperczar", tag = "Behemoth Bait", color = nil, chat_color = nil},
 		{name = "i-l-i", tag = "Space Dolphin", color = nil, chat_color = nil},
 		{name = "Uriopass", tag = "Ratio Maniac", color = nil, chat_color = nil},
@@ -22,11 +22,11 @@ global.modular_tag_patreon.patreons = {
 		{name = "Zirr", tag = nil, color = nil, chat_color = nil},
 		{name = "Nr42", tag = nil, color = nil, chat_color = nil},
 		{name = "zerot", tag = nil, color = nil, chat_color = nil},
-		{name = "tzwaan", tag = "Educated Smartass", color = { r = 0.275, g = 0.755, b = 0.712, a = 0.5 }, chat_color = { r = 0.335, g = 0.918, b = 0.866, a = 0.5}},
+		{name = "tzwaan", tag = "Educated Smartass", color = { r = 0.275, g = 0.755, b = 0.712}, chat_color = { r = 0.335, g = 0.918, b = 0.866}},
 		{name = "Lazyboy38", tag = "Lazy German", color = nil, chat_color = nil},
 		{name = "Blooper", tag = "Reliability Engineer", color = nil, chat_color = nil},
 		{name = "exi2163", tag = "Solution Engineer", color = nil, chat_color = nil},
-		{name = "Kodikuu", tag = "Tinkerer", color = nil, chat_color = nil},
+		{name = "Kodikuu", tag = "Tinkerer", color = { r = 0.404, g = 0.227, b = 0.718}, chat_color = nil},
 		{name = "Twinsen", tag = "Factorio Developer", color = nil, chat_color = nil},
 		{name = "SpennyDurp", tag = "I WILL Break It", color = nil, chat_color = nil}
 }

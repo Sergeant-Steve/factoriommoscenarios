@@ -15,3 +15,4 @@ require "equipment"
 
 require "wg_jungle"
 require "debug"
+--require lublib/programmable_daynight_cycle --Zr's fancy day-night cycle stuff

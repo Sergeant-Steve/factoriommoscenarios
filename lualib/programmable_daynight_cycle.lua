@@ -1,38 +1,46 @@
 TAU = 6.28318530718 -- this is not the correct form to declare a global variable
 
 function programmable_daynight_cycle(event)
-	local stepsize = 600 --10 sec in ticks. Assuming 10min day-cycle, that's 60 points resolution
+	local stepsize_ticks = 600 --10 sec in ticks. Assuming 10min day-cycle, that's 60 points resolution
+	local daylength_ticks = 36000-- 60ticks * 60 sec * 10min
 	if not (game.tick % (stepsize) == 0) then -- Replace with 'on_nth_tick' once I figure out how to do that
 		return
 	end
 	local current_time = game.player.surface.daytime -- according to the day-night cycle, not in ticks. [0.0 - 1.0)
-	local next_time = 2 * current_time
-	local current_darkness = game.player.surface.darkness -- from [0.0 to 0.85]. 0.85 represents full dark
+	local next_time = current_time + (1/(daylength/stepsize))
+	local current_darkness = 1 - game.player.surface.darkness -- from [1.0 to 0.15]. 0.15 represents full dark
 	-- calculate the next set of xy coords. 
-	-- local x1 = current_time
-	-- local x2 = 2 * current_time -- not needed as x2 - x1 will always be equal x1 here, meaning that both assignments are unessesary
 	-- y1 and y2 does not need to be assigned as they're made form a single call and not used again. 
 	
-	local slope = ((math.cos(next_time*TAU)-math.cos(current_time*TAU))/current_time)
+	local slope = ((math.cos(next_time*TAU)-math.cos(current_time*TAU))/(next_time-current_time))
+	-- very unsure if this works as expected. missing limiting the y range of it to 1.0 - 0.15
+	
+	if(slope == 0.0)
+		slope += 0.00001
+	end -- avoiding n/0
 	
 	-- convert xy coords to dusk/evening (down) or morning/dawn (up) as needed
 	-- find the x coord where the slope intersects y=1.0 and y=0.0.
 	-- if the slope is positive, you're setting dusk and evening. If not, you're setting morning and dawn.
 	-- the order is dusk - evening - morning - dawn. each one's x-coord needs to be in that order. the x coord can be outside 0.0 -> 0.999
 	
-	local line1start, line1end = {x = current_time, y = 0}, {x = 2*current_time, y = 10}
-	local line2start, line2end = {x = -10000000, y = 1}, {x = 10000000, y = 1}
-    local X = intersection(line1start, line1end, line2start, line2end))
+	local current_curve_start, current_curve_end = {x = current_time, y = current_darkness}, {x = next_time, y = (next_time - current_time)*slope}
+	local y_top_start, y_top_end = {x = 0, y = 1}, {x = 1, y = 1}
+	local y_bot_start, y_bot_end = {x = 0, y = 0.15}, {x = 1, y = 0.15}
+    local top_point = intersection(current_curve_start, current_curve_end, y_top_start, y_top_end))
+	local bot_point = intersection(current_curve_start, current_curve_end, y_top_start, y_top_end))
 	
 	if(slope == 0.0)
 		slope = slope + 0.0001
 	end -- avoiding n/0
 	
 	if(slope < 0.0) -- dusk -> evening
-	-- do something
+		game.player.surface.dusk = top_point.x
+		game.player.surface.evening = bot_point.x
 	end
 	else -- morning -> dawn
-	-- do something else
+		game.player.surface.morning = bot_point.x
+		game.player.surface.dawn = top_point.x
 	end
 end
 
@@ -49,11 +57,6 @@ end
 
 function slope (x1, y1, x2, y2)
 return ((x2-x1)/(y2-y1))
-
-local line1start, line1end = {x = 4, y = 0}, {x = 6, y = 10}
-local line2start, line2end = {x = 0, y = 3}, {x = 10, y = 7}
-print(intersection(line1start, line1end, line2start, line2end))
-
 
 
 Event.register(defines.events.on_tick, programmable_daynight_cycle)

@@ -6,13 +6,14 @@ function programmable_daynight_cycle(event)
 	if not (game.tick % stepsize_ticks == 0) then -- Replace with 'on_nth_tick' once I figure out how to do that
 		return
 	end
+	local time_ratio = (daylength_ticks/25000)
 	game.surfaces[1].daytime = 0
 	local current_time = ((game.tick % daylength_ticks) / daylength_ticks)
-	local next_time = current_time + (stepsize_ticks/daylength_ticks)
-	game.print("current time: " .. current_time .. " next time " .. next_time)
+	local time_step = (stepsize_ticks/daylength_ticks)
+	game.print("current time: " .. current_time .. " time step " .. time_step)
 	
 	local current_curve_start = {x = current_time, y = 0.15 + ((math.sin(TAU * current_time)+1)*0.425)}
-	local current_curve_end = {x = next_time, y = 0.15 + ((math.sin(TAU * next_time)+1)*0.425)}
+	local current_curve_end = {x = current_time + (time_step * time_ratio), y = 0.15 + ((math.sin(TAU * (current_time + time_step))+1)*0.425)}
 	local y_top_start, y_top_end = {x = -999999999, y = 1}, {x = 999999999, y = 1}
 	local y_bot_start, y_bot_end = {x = -999999999, y = 0.15}, {x = 999999999, y = 0.15}
 	

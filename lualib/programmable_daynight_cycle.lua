@@ -1,14 +1,14 @@
 TAU = 6.28318530718 -- this is not the correct form to declare a global variable. Will fix once everything else works
 
 function programmable_daynight_cycle(event)
-	local daylength_ticks = 8000 --The day-night cycle length in ticks. Can be any value.
-	local stepsize_ticks = 50 	 -- warning! stepsize_ticks cannot be over 25000!
+	local daylength_ticks = 2000 --The day-night cycle length in ticks. Can be any value.
+	local stepsize_ticks = 59 	 -- warning! stepsize_ticks cannot be over 25000!
 	if not (game.tick % stepsize_ticks == 0) then -- Replace with 'on_nth_tick' once I figure out how to do that
 		return
 	end
 	local time_ratio = (daylength_ticks/25000)
 	game.surfaces[1].daytime = 0
-	local current_time = ((game.tick % daylength_ticks) / daylength_ticks)
+	local current_time = (game.tick / daylength_ticks)
 	local time_step = (stepsize_ticks/daylength_ticks)
 	game.print("current time: " .. current_time .. " time step " .. time_step)
 	

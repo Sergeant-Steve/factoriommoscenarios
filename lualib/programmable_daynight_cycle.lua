@@ -1,29 +1,21 @@
 TAU = 6.28318530718 -- this is not the correct form to declare a global variable. Will fix once everything else works
-
+PI =  3.14159265359
 function programmable_daynight_cycle(event)
 	local daylength_ticks = 15000 --The day-night cycle length in ticks. Can be any value.
-	local stepsize_ticks = 59 	 -- warning! stepsize_ticks cannot be over 25000!
+	local stepsize_ticks = 59 	 -- stepsize_ticks < 25000!!!
 	if not (game.tick % stepsize_ticks == 0) then -- Replace with 'on_nth_tick' once I figure out how to do that
 		return
 	end
-	local time_ratio = (daylength_ticks/25000)
+	local time_ratio = (daylength_ticks/25000) -- normal day-night cycle length
 	local current_time = (game.tick / daylength_ticks)
 	local time_step = (stepsize_ticks/daylength_ticks)
-	-- game.print("current time: " .. current_time .. " time step " .. time_step)
-	local time1 = current_time
-	local time2 = (current_time + time_step)
-	--local current_curve_start = {x = current_time, y = normalize_dnc(math.sin(time1))}
-	--local current_curve_end = {x = current_time + (time_step * time_ratio), y = normalize_dnc(math.sin(time2))}
-	
-	current_curve_start = {x = current_time, y = normalize_dnc(alt_dnc(time1))}
-	current_curve_end = {x = current_time + (time_step * time_ratio), y = normalize_dnc(alt_dnc(time2))}
-	
+	current_curve_start = {x = current_time, y = alt_dnc(current_time)}
+	current_curve_end = {x = current_time + (time_step * time_ratio), y = alt_dnc(current_time + time_step)}
 	local y_top_start, y_top_end = {x = -999999999, y = 1}, {x = 999999999, y = 1}
 	local y_bot_start, y_bot_end = {x = -999999999, y = 0.15}, {x = 999999999, y = 0.15}
-	
     local top_point = intersection(current_curve_start, current_curve_end, y_top_start, y_top_end)
 	local bot_point = intersection(current_curve_start, current_curve_end, y_bot_start, y_bot_end)
-	-- cleaning up
+	-- clean-up and avoiding daytime loop-back
 	game.surfaces[1].daytime = 0
 	game.surfaces[1].dusk = -999999999
 	game.surfaces[1].dawn = 999999999
@@ -38,13 +30,11 @@ function programmable_daynight_cycle(event)
 	end
 end
 
-function normalize_dnc(n) -- takes [-1, 1] returns [0.15, 1] 
-	return 0.15 + ((n+1)*0.425)
-end
-
-function alt_dnc (x)
-	return (math.sin(x * TAU) + (0.111 * math.sin(3 * x * TAU))) * 1.125
-	-- magic numbers to shape the curve and keep the output to [-1, 1]
+function alt_dnc (x) -- now more fancy and with 179.9 days 'orbit'
+	x = x * TAU
+	-- return (math.sin(x * TAU) + (0.111 * math.sin(3 * x * TAU))) * 1.12 -- simpler formula, no 'orbit'
+	-- return math.sin(x)
+	return 0.15 + 0.85*(((1+((math.sin(x)+(0.111111111*math.sin(3*x))-(0.02*math.sin(5*x))-(0.01020408*math.sin(7*x)))*1.1365))*0.5)*(1-(1+math.cos(0.0055555*x + PI))*0.48))
 end
 
 -- take all this and put it into a seperate module once everything else works

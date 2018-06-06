@@ -13,6 +13,6 @@ require "lualib/modular_information/modular_information" --New player informatio
 require "lualib/antigrief" --untested
 require "equipment"
 
-require "wg_jungle"
+-- require "wg_jungle" --Jungle World Generator, generates a world full of trees!
 require "debug"
--- require "lualib/programmable_daynight_cycle" --Zr's fancy day-night cycle stuff
+require "lualib/programmable_daynight_cycle" --Zr's fancy day-night cycle stuff

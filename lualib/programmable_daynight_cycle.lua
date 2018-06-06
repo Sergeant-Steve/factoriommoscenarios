@@ -1,6 +1,8 @@
-TAU = 6.28318530718 -- this is not the correct form to declare a global variable. Will fix once everything else works
-PI =  3.14159265359
-function programmable_daynight_cycle(event)
+global.programmable_daynight_cycle = global.programmable_daynight_cycle or {}
+global.programmable_daynight_cycle.enabled = global.programmable_daynight_cycle.enabled or true
+
+
+function programmable_daynight_cycle_tick(event)
 	local daylength_ticks = 15000 --The day-night cycle length in ticks. Can be any value.
 	local stepsize_ticks = 59 	 -- stepsize_ticks < 25000!!!
 	if not (game.tick % stepsize_ticks == 0) then -- Replace with 'on_nth_tick' once I figure out how to do that
@@ -9,12 +11,12 @@ function programmable_daynight_cycle(event)
 	local time_ratio = (daylength_ticks/25000) -- normal day-night cycle length
 	local current_time = (game.tick / daylength_ticks)
 	local time_step = (stepsize_ticks/daylength_ticks)
-	current_curve_start = {x = current_time, y = alt_dnc(current_time)}
-	current_curve_end = {x = current_time + (time_step * time_ratio), y = alt_dnc(current_time + time_step)}
+	current_curve_start = {x = current_time, y = programmable_daynight_cycle_alt_dnc(current_time)}
+	current_curve_end = {x = current_time + (time_step * time_ratio), y = programmable_daynight_cycle_alt_dnc(current_time + time_step)}
 	local y_top_start, y_top_end = {x = -999999999, y = 1}, {x = 999999999, y = 1}
 	local y_bot_start, y_bot_end = {x = -999999999, y = 0.15}, {x = 999999999, y = 0.15}
-    local top_point = intersection(current_curve_start, current_curve_end, y_top_start, y_top_end)
-	local bot_point = intersection(current_curve_start, current_curve_end, y_bot_start, y_bot_end)
+    local top_point = programmable_daynight_cycle_intersection(current_curve_start, current_curve_end, y_top_start, y_top_end)
+	local bot_point = programmable_daynight_cycle_intersection(current_curve_start, current_curve_end, y_bot_start, y_bot_end)
 	-- clean-up and avoiding daytime loop-back
 	game.surfaces[1].daytime = 0
 	game.surfaces[1].dusk = -999999999
@@ -30,7 +32,9 @@ function programmable_daynight_cycle(event)
 	end
 end
 
-function alt_dnc (x) -- now more fancy and with 179.9 days 'orbit'
+function programmable_daynight_cycle_alt_dnc (x) -- now more fancy and with 179.9 days 'orbit'
+	local TAU = 6.28318530718 -- this is not the correct form to declare a global variable. Will fix once everything else works
+	local PI =  3.14159265359
 	x = x * TAU
 	-- return (math.sin(x * TAU) + (0.111 * math.sin(3 * x * TAU))) * 1.12 -- simpler formula, no 'orbit'
 	-- return math.sin(x)
@@ -39,7 +43,7 @@ end
 
 -- take all this and put it into a seperate module once everything else works
 -- code stolen from https://rosettacode.org/wiki/Find_the_intersection_of_two_lines#Lua
-function intersection (s1, e1, s2, e2)
+function programmable_daynight_cycle_intersection (s1, e1, s2, e2)
   local d = (s1.x - e1.x) * (s2.y - e2.y) - (s1.y - e1.y) * (s2.x - e2.x)
   local a = s1.x * e1.y - s1.y * e1.x
   local b = s2.x * e2.y - s2.y * e2.x
@@ -48,4 +52,29 @@ function intersection (s1, e1, s2, e2)
   return x--, y
 end
 
-Event.register(defines.events.on_tick, programmable_daynight_cycle)
+function programmable_daynight_cycle_enable()
+	global.programmable_daynight_cycle.enabled = true
+	Event.register(defines.events.on_tick, programmable_daynight_cycle_tick)
+end
+
+function programmable_daynight_cycle_disable()
+	global.programmable_daynight_cycle.enabled = false
+	Event.remove(defines.events.on_tick, programmable_daynight_cycle_tick)
+	-- Might want to reset these values to their defaults?
+	-- game.surfaces[1].daytime = 0
+	-- game.surfaces[1].dusk = -999999999
+	-- game.surfaces[1].dawn = 999999999
+	-- game.surfaces[1].evening = -999999998
+	-- game.surfaces[1].morning = 999999998
+end
+
+function programmable_daynight_cycle_init()
+	if global.programmable_daynight_cycle.enabled then
+		programmable_daynight_cycle_enable()
+	else
+		programmable_daynight_cycle_disable()
+	end
+end
+
+Event.register(-1, programmable_daynight_cycle_init)
+

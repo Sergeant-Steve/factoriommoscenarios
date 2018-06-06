@@ -115,7 +115,7 @@ function modular_tag_patreon_joined(event)
 			else 
 				player.print("o.O It seems you don't have a unique color.. Please contact the admins to get one.")
 			end
-			if(patreon.color ~= nil) then
+			if(patreon.chat_color ~= nil) then
 				player.chat_color = patreon.chat_color
 				player.print("Unique chat-color applied automagically!")
 			end

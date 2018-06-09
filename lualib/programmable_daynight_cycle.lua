@@ -140,7 +140,7 @@ function programmable_daynight_cycle_function_selection(n)
 		global.programmable_daynight_cycle_function_selection = n
 	else 
 		game.print("programmable_daynight_cycle_function_selection was set to nil!")
-		global.programmable_daynight_cycle_function_selection = 1
+		global.programmable_daynight_cycle_function_selection = 0
 	end
 end
 

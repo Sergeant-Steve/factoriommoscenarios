@@ -28,7 +28,8 @@ global.modular_tag_patreon.patreons = {
 		{name = "exi2163", tag = "Solution Engineer", color = nil, chat_color = nil},
 		{name = "Kodikuu", tag = "Tinkerer", color = { r = 0.404, g = 0.227, b = 0.718}, chat_color = nil},
 		{name = "Twinsen", tag = "Factorio Developer", color = nil, chat_color = nil},
-		{name = "SpennyDurp", tag = "I WILL Break It", color = nil, chat_color = nil}
+		{name = "SpennyDurp", tag = "I WILL Break It", color = nil, chat_color = nil},
+		{name = "Alkumist", tag = "Snoot booper :3", color = { r = 1.0, g = 1.0, b = 0.0}, chat_color = nil}
 }
 
 function modular_tag_patreon_on_gui_click(event)

@@ -78,7 +78,7 @@ function programmable_daynight_cycle_range_limiter(n)
 	if (n < 0) then
 		n = 0
 	end
-	if (n > 1.0)
+	if (n > 1.0) then
 		n = 1
 	end
 	return 0.15 + (n * 0.85)

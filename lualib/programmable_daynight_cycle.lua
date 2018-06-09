@@ -11,7 +11,7 @@ function programmable_daynight_cycle_tick(event)
 	end
 	if(game.surfaces[1].freeze_daytime)then
 		game.surfaces[1].freeze_daytime = false
-		game.print("Can't use freeze_daytime while programmable day-night cycle is active.")
+		game.print("Can't use freeze_daytime while programmable day-night cycle is active; it has been unfrozen")
 	end
 	local daylength_ticks = global.programmable_daynight_cycle_daylength_ticks
 	local time_ratio = (daylength_ticks/25000) -- normal day-night cycle length
@@ -62,7 +62,7 @@ function programmable_daynight_cycle_alt_dnc(x) -- now more fancy and with 179.9
 		return programmable_daynight_cycle_range_limiter(returnvalue * s)
 	
 	elseif (global.programmable_daynight_cycle_function_selection == 4) then
-		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.1225)) * 0.5 -- simpler formula, no 'orbit'
+		returnvalue = ((1+(math.sin(x) + (0.111 * math.sin(3 * x)))) * 1.1225) * 0.5 -- simpler formula, no 'orbit'
 		return programmable_daynight_cycle_range_limiter(returnvalue * 0.2) 
 	else 
 		returnvalue = (1 + math.sin(x)) * 0.5 -- as simple as it gets, good for backup!
@@ -75,6 +75,12 @@ function programmable_daynight_cycle_alt_dnc(x) -- now more fancy and with 179.9
 end
 
 function programmable_daynight_cycle_range_limiter(n)
+	if (n < 0) then
+		n = 0
+	end
+	if (n > 1.0)
+		n = 1
+	end
 	return 0.15 + (n * 0.85)
 end
 

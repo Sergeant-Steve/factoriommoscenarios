@@ -1,6 +1,6 @@
 global.programmable_daynight_cycle = global.programmable_daynight_cycle or {}
 global.programmable_daynight_cycle.enabled = global.programmable_daynight_cycle.enabled or true
-global.programmable_daynight_cycle_function_selection = 3
+global.programmable_daynight_cycle_function_selection = 4
 global.programmable_daynight_cycle_daylength_ticks = 36000
 global.programmable_daynight_cycle_stepsize_ticks = 59
 
@@ -46,7 +46,7 @@ function programmable_daynight_cycle_alt_dnc(x) -- now more fancy and with 179.9
 	x = x * TAU
 	
 	if (global.programmable_daynight_cycle_function_selection == 1) then
-		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.12)) * 0.5 -- simpler formula, no 'orbit'
+		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.1225)) * 0.5 -- simpler formula, no 'orbit'
 		return programmable_daynight_cycle_range_limiter(returnvalue)
 		
 	elseif (global.programmable_daynight_cycle_function_selection == 2) then
@@ -58,9 +58,12 @@ function programmable_daynight_cycle_alt_dnc(x) -- now more fancy and with 179.9
 		if (s < 0.25) then
 			s = 0.25
 		end
-		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.12)) * 0.5 -- simpler formula, no 'orbit'
+		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.1225)) * 0.5 -- simpler formula, no 'orbit'
 		return programmable_daynight_cycle_range_limiter(returnvalue * s)
-		
+	
+	elseif (global.programmable_daynight_cycle_function_selection == 4) then
+		returnvalue = (1+((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.1225)) * 0.5 -- simpler formula, no 'orbit'
+		return programmable_daynight_cycle_range_limiter(returnvalue * 0.2) 
 	else 
 		returnvalue = (1 + math.sin(x)) * 0.5 -- as simple as it gets, good for backup!
 		if(unexpected_value == 0) then

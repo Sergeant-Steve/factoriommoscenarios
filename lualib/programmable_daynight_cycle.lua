@@ -1,5 +1,5 @@
-global.programmable_daynight_cycle = global.programmable_daynight_cycle or {}
-global.programmable_daynight_cycle.enabled = global.programmable_daynight_cycle.enabled or true
+--global.programmable_daynight_cycle = global.programmable_daynight_cycle or {}
+--global.programmable_daynight_cycle.enabled = global.programmable_daynight_cycle.enabled or true
 global.programmable_daynight_cycle_function_selection = 4
 global.programmable_daynight_cycle_daylength_ticks = 36000
 global.programmable_daynight_cycle_stepsize_ticks = 59
@@ -95,26 +95,26 @@ function programmable_daynight_cycle_intersection (s1, e1, s2, e2)
   return x--, y
 end
 
-function programmable_daynight_cycle_enable()
-	global.programmable_daynight_cycle.enabled = true
-	Event.register(defines.events.on_tick, programmable_daynight_cycle_tick)
-end
+--function programmable_daynight_cycle_enable()
+--	global.programmable_daynight_cycle.enabled = true
+--	Event.register(defines.events.on_tick, programmable_daynight_cycle_tick)
+--end
 
-function programmable_daynight_cycle_disable()
-	global.programmable_daynight_cycle.enabled = false
-	Event.remove(defines.events.on_tick, programmable_daynight_cycle_tick)
-	game.surfaces[1].daytime = 0
-	game.surfaces[1].dusk = -999999999
-	game.surfaces[1].dawn = 999999999
-	game.surfaces[1].evening = -999999998
-	game.surfaces[1].morning = 999999998
-	-- first setting to safe values before setting them back to defaults. 
-	game.surfaces[1].evening = 0.45
-	game.surfaces[1].morning = 0.55
-	game.surfaces[1].dusk = 0.25
-	game.surfaces[1].dawn = 0.75
-	game.print("Resetting day-night cycle to default values")
-end
+--function programmable_daynight_cycle_disable()
+--	global.programmable_daynight_cycle.enabled = false
+--	Event.remove(defines.events.on_tick, programmable_daynight_cycle_tick)
+--	game.surfaces[1].daytime = 0
+--	game.surfaces[1].dusk = -999999999
+--	game.surfaces[1].dawn = 999999999
+--	game.surfaces[1].evening = -999999998
+--	game.surfaces[1].morning = 999999998
+--	-- first setting to safe values before setting them back to defaults. 
+--	game.surfaces[1].evening = 0.45
+--	game.surfaces[1].morning = 0.55
+--	game.surfaces[1].dusk = 0.25
+--	game.surfaces[1].dawn = 0.75
+--	game.print("Resetting day-night cycle to default values")
+--end
 
 function programmable_daynight_cycle_stepsize_ticks(n)
 	if (n ~= nil) then
@@ -153,14 +153,15 @@ function programmable_daynight_cycle_function_selection(n)
 	end
 end
 
-function programmable_daynight_cycle_init()
-	if global.programmable_daynight_cycle.enabled then
-		game.print("PDNC is enabled!")
-		programmable_daynight_cycle_enable()
-	else
-		programmable_daynight_cycle_disable()
-		game.print("PDNC is disabled!")
-	end
-end
+--function programmable_daynight_cycle_init()
+--	if global.programmable_daynight_cycle.enabled then
+--		game.print("PDNC is enabled!")
+--		programmable_daynight_cycle_enable()
+--	else
+--		programmable_daynight_cycle_disable()
+--		game.print("PDNC is disabled!")
+--	end
+--end
 
-Event.register(-1, programmable_daynight_cycle_init)
+Event.register(defines.events.on_tick,programmable_daynight_cycle_tick)
+--Event.register(-1, programmable_daynight_cycle_init)

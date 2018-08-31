@@ -7,25 +7,33 @@
 -- Changing day-night cycle based on days
 -- Handle 'next time' elegantly
 
-global.stepsize = 51 -- used for steps as well as on_nth_tick
+-- lamps enable darkness: [0.595 - 0.425] scaled to [0.0 - 0.85] range from [0.0 - 1.0] range
+
+global.pdnc_stepsize = 21 -- also used for script.on_nth_tick
 global.pdnc_surface = 1
 global.pdnc_current_time = 0
 global.pdnc_current_point = {x = 0, y = 1.0}
 global.pdnc_last_point = {x = -1, y = 0.0}
-global.pdnc_max_brightness = 1.0
-global.pdnc_doomsday_start = 20.5 -- in days
-global.pdnc_pollution_multiplier = 10
+global.pdnc_max_brightness = 1.0 -- for clusterio
+global.pdnc_doomsday_start = 30.5 -- in days, multiply with game.surfaces[global.pdnc_surface].ticks_per_day to get ticks until doomsday
+global.pdnc_pollution_multiplier = 5000
+global.pdnc_debug = false
+global.pdnc_max_brightness_disable = false
+global.pdnc_rockets_launched = 0
+global.pdnc_rockets_launched_step_size = 0.025
+global.pdnc_rockets_launched_smooth = 0
 
-script.on_nth_tick(global.stepsize, pdnc_core)
-script.on_init(pdnc_setup)
-script.on_load(pdnc_setup)
+
 function pdnc_setup()
-    commands.add_command("timeleft", "Gives you the time till doomsday!", pdnc_doomsday_time_left)
-	game.surfaces[s].ticks_per_day = pdnc_min_to_ticks(10)
+	game.surfaces[global.pdnc_surface].ticks_per_day = pdnc_min_to_ticks(5.0)
+	pdnc_on_load()
+end
+
+function pdnc_on_load()
+	commands.add_command("timeleft", "Gives you the time till doomsday!", pdnc_doomsday_time_left)
 end
 
 function pdnc_core()
-	game.print("PDNC core activated")
 	pdnc_freeze_check()
 	local s = global.pdnc_surface
 	global.current_time = game.tick / game.surfaces[s].ticks_per_day
@@ -33,62 +41,86 @@ function pdnc_core()
 	global.pdnc_current_point = {x = global.current_time, y = pdnc_program()}
     local top_point = pdnc_intersection_top (global.pdnc_last_point, global.pdnc_current_point)
 	local bot_point = pdnc_intersection_bot (global.pdnc_last_point, global.pdnc_current_point)
-	
-	if(top_point == bot_point) then
+
+	-- the order is dusk - evening - morning - dawn. They *must* be in that order and they cannot be equal
+	if(top_point < bot_point) then -- dusk -> evening
+		pdnc_cleanup_last_tick(s)
+		game.surfaces[s].evening = bot_point - global.current_time
+		game.surfaces[s].dusk = top_point - global.current_time
+	elseif(top_point > bot_point) then -- morning -> dawn
+		pdnc_cleanup_last_tick(s)
+		game.surfaces[s].morning = bot_point - global.current_time
+		game.surfaces[s].dawn = top_point - global.current_time
+	elseif(top_point == bot_point) then
 		game.print("PDNC: Top and bot point equal")
 		-- no cleanup here
 		-- if the points are equal, use last value until not equal
-	elseif(top_point < bot_point) then -- dusk -> evening
-		pdnc_cleanup_last_tick(s) -- placed after, 
-		game.surfaces[s].evening = bot_point - global.current_time
-		game.surfaces[s].dusk = top_point - global.current_time
-	else -- morning -> dawn
-			pdnc_cleanup_last_tick(s)
-		game.surfaces[s].morning = bot_point - global.current_time
-		game.surfaces[s].dawn = top_point - global.current_time
+		-- this should never be reached unless the pdnc_program() is broken.
+	else
+		game.print("Top and bot not different nor equal. probably a NaN error")
+		game.print("bot_point: " .. bot_point)
+		game.print("top_point: " .. top_point)
+		-- this should never be reached.
 	end
 end
 
-function pdnc_update_globals(s)
+function pdnc_cleanup_last_tick(s)
 	game.surfaces[s].daytime = 0
-	game.surfaces[s].dusk = -999999999
-	game.surfaces[s].dawn = 999999999
-	game.surfaces[s].evening = -999999998
-	game.surfaces[s].morning = 999999998
+	-- must be in this  spesific order to 
+	-- preserve the order at all times
+	-- dusk < evening < morning < dawn.
+	game.surfaces[s].dusk = -999999999999
+	game.surfaces[s].dawn = 999999999999
+	game.surfaces[s].evening = -999999999998
+	game.surfaces[s].morning = 999999999998
 end
+
+
 function pdnc_freeze_check()
 	if(game.surfaces[1].freeze_daytime)then
 		game.surfaces[1].freeze_daytime = false
-		game.print("Can't use freeze_daytime while programmable day-night cycle is active; it has been unfrozen")
+		game.print("Can't use freeze_daytime while programmable day-night cycle is active; time has been unfrozen")
 	end
 end
 
 function pdnc_program()
-	x = global.current_time * math.pi * 2
-	local r = 0
+	--reduce_brightness(0.5)
+	local x = global.current_time * math.pi * 2
+	local returnvalue = 0
+	local radius = 256
 	if (global.current_time < global.pdnc_doomsday_start) then
-		r = math.pow(pdnc_c_boxy(x), (1 + global.current_time / 4))
+		returnvalue = math.pow(pdnc_c_boxy(x), (1 + global.current_time / 4))
 		-- days become shorter over time towards n^6.125
-		
 	elseif (global.current_time < global.pdnc_doomsday_start + 1) then
-		r = math.pow(((global.pdnc_doomsday_start + 1) - global.current_time), 10)
-		pdnc_pollute(r)
+		global.pdnc_max_brightness_disable = true
+		returnvalue = math.pow(((global.pdnc_doomsday_start + 1) - global.current_time), 7)
+		pdnc_pollute(radius,returnvalue,8)
 	else
-		r = math.pow(pdnc_c_boxy(x), 6.125)*0.5
+		global.pdnc_max_brightness_disable = false
+		returnvalue = math.pow(pdnc_c_boxy(x), 6.125)--*0.5
 	end
-	return pdnc_scaler(r)
+	return pdnc_scaler(returnvalue)
 end
+
+function reduce_brightness(n)
+	global.pdnc_max_brightness = 1 - ((global.current_time / global.pdnc_doomsday_start)*n)
+	if(global.pdnc_max_brightness < n) then
+		global.pdnc_max_brightness = n
+	end
+	-- 0.5 is magic number when *all* lights are on
+end	
 
 function pdnc_c_boxy(x)
 	return pdnc_normalize((math.sin(x) + (0.111 * math.sin(3 * x))) * 1.124859392575928)
+	-- magic numbers to make it scale to (-1, 1)
 end
 
-function pdnc_pollute(r)
-	local pollution = global.stepsize * r * global.pdnc_pollution_multiplier
+function pdnc_pollute(r,p,n)
+	local pollution = global.pdnc_stepsize * p * global.pdnc_pollution_multiplier
 	local position = {x = 0.0, y = 0.0}
-	local step = math.pi / 4
-	for i=0, 7 do
-		position = {x = math.sin(step*i)*256, y = math.cos(step*i)*256}		 
+	local step = (math.pi * 2) / n
+	for i=0, n do
+		position = {x = math.sin(step*i)*r, y = math.cos(step*i)*r}		 
 		game.surfaces[global.pdnc_surface].pollute(position, pollution)
 	end
 end
@@ -104,7 +136,12 @@ function pdnc_scaler(r)
 	if (r > 1.0) then
 		r = 1.0
 	end
-	return r * (0.85 * global.pdnc_max_brightness) + 0.15
+	if(global.pdnc_max_brightness_disable) then
+		return r * 0.85
+	else
+		global.pdnc_max_brightness = 1 -  pdnc_rocket_launch_darkness()
+		return r * (0.85 * global.pdnc_max_brightness)
+	end
 end
 
 function pdnc_intersection (s1, e1, s2, e2)
@@ -117,20 +154,20 @@ function pdnc_intersection (s1, e1, s2, e2)
 end
 
 function pdnc_intersection_top (s2, e2)
-	local s1, e1 = {x = -999999999, y = 1}, {x = 999999999, y = 1}
+	local s1, e1 = {x = -999999999, y = 0.85}, {x = 999999999, y = 0.85}
 	return pdnc_intersection (s1, e1, s2, e2)
 end
 
 function pdnc_intersection_bot (s2, e2)
-	local s1, e1 = {x = -999999999, y = 0.15}, {x = 999999999, y = 0.15}
+	local s1, e1 = {x = -999999999, y = 0.0}, {x = 999999999, y = 0.0}
 	return pdnc_intersection (s1, e1, s2, e2)
 end
 
-function pdnc_setup()
-    commands.add_command("timeleft", "Gives you the time till doomsday!", pdnc_doomsday_time_left)
-end
-
 function pdnc_set_max_brightness(n)
+	if(n == nil) then
+		game.print("Tried to set max brightness to nil! Using 1.0 instead.")
+		n = 1.0
+	end
 	if(n < 0) then
 		game.print("tried to set max brightness to " .. n .. " needs to be between 0.0 and 1.0")
 		n = 0
@@ -165,3 +202,22 @@ function pdnc_doomsday_time_left()
 		game.print("Doomsday was: " .. string.format("%d:%02d:%02d", hours, minutes % 60, seconds % 60) .. " ago...")
 	end
 end
+
+function pdnc_rocket_launch_counter()
+	global.pdnc_rockets_launched = 1 + global.pdnc_rockets_launched
+end
+
+function pdnc_rocket_launch_darkness()
+	if (global.pdnc_rockets_launched_smooth < global.pdnc_rockets_launched)then
+		global.pdnc_rockets_launched_smooth = global.pdnc_rockets_launched_step_size + global.pdnc_rockets_launched_smooth
+	end
+	return (1 - (50/(global.pdnc_rockets_launched_smooth+50)))
+end
+
+script.on_nth_tick(global.pdnc_stepsize, pdnc_core)
+script.on_init(pdnc_setup)
+script.on_load(pdnc_on_load)
+--script.on_rocket_launched(pdnc_rocket_launch_counter)
+script.on_event(defines.events.on_rocket_launched, function(event)
+  pdnc_rocket_launch_counter()
+end)

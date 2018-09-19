@@ -15,7 +15,7 @@ global.pdnc_current_time = 0
 global.pdnc_current_point = {x = 0, y = 1.0}
 global.pdnc_last_point = {x = -1, y = 0.0}
 global.pdnc_max_brightness = 1.0 -- for clusterio
-global.pdnc_doomsday_start = 30.5 -- in days, multiply with game.surfaces[global.pdnc_surface].ticks_per_day to get ticks until doomsday
+global.pdnc_doomsday_start = -30.75 -- in ingame days. Negative numbers disables
 global.pdnc_pollution_multiplier = 5000
 global.pdnc_debug = false
 global.pdnc_max_brightness_disable = false
@@ -25,12 +25,15 @@ global.pdnc_rockets_launched_smooth = 0
 
 
 function pdnc_setup()
-	game.surfaces[global.pdnc_surface].ticks_per_day = pdnc_min_to_ticks(5.0)
+	game.surfaces[global.pdnc_surface].ticks_per_day = pdnc_min_to_ticks(10.0)
 	pdnc_on_load()
 end
 
 function pdnc_on_load()
 	commands.add_command("timeleft", "Gives you the time till doomsday!", pdnc_doomsday_time_left)
+	if(global.pdnc_doomsday_start < 0.0)
+		pdnc_max_brightness = 0.5 -- if not doomsday, eternal night
+	end
 end
 
 function pdnc_core()
@@ -41,7 +44,7 @@ function pdnc_core()
 	global.pdnc_current_point = {x = global.current_time, y = pdnc_program()}
     local top_point = pdnc_intersection_top (global.pdnc_last_point, global.pdnc_current_point)
 	local bot_point = pdnc_intersection_bot (global.pdnc_last_point, global.pdnc_current_point)
-
+	
 	-- the order is dusk - evening - morning - dawn. They *must* be in that order and they cannot be equal
 	if(top_point < bot_point) then -- dusk -> evening
 		pdnc_cleanup_last_tick(s)
@@ -87,14 +90,16 @@ function pdnc_program()
 	--reduce_brightness(0.5)
 	local x = global.current_time * math.pi * 2
 	local returnvalue = 0
-	local radius = 256
-	if (global.current_time < global.pdnc_doomsday_start) then
+	local radius = 512 --make global
+	if (global.pdnc_doomsday_start < 0.0) then
+		returnvalue = pdnc_scaler(returnvalue)
+	elseif (global.current_time < global.pdnc_doomsday_start) then
 		returnvalue = math.pow(pdnc_c_boxy(x), (1 + global.current_time / 4))
 		-- days become shorter over time towards n^6.125
 	elseif (global.current_time < global.pdnc_doomsday_start + 1) then
 		global.pdnc_max_brightness_disable = true
 		returnvalue = math.pow(((global.pdnc_doomsday_start + 1) - global.current_time), 7)
-		pdnc_pollute(radius,returnvalue,8)
+		pdnc_pollute(radius,returnvalue,16)
 	else
 		global.pdnc_max_brightness_disable = false
 		returnvalue = math.pow(pdnc_c_boxy(x), 6.125)--*0.5

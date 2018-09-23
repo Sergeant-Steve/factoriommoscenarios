@@ -20,7 +20,7 @@ function permissions_upgrade(event)
 	if event.tick % 18000 == 500 then --Check once every 5 minutes
 		for n, p in pairs(game.connected_players) do
 			if p.permission_group.name == "Default" then
-				if p.online_time / 60 / 60 > 60 then --60 minutes
+				if p.online_time / 60 / 60 > 30 then --30 minutes
 					p.permission_group = game.permissions.get_group("trusted")
 				end
 			end

@@ -31,7 +31,7 @@ end
 
 function pdnc_on_load()
 	commands.add_command("timeleft", "Gives you the time till doomsday!", pdnc_doomsday_time_left)
-	if(global.pdnc_doomsday_start < 0.0)
+	if(global.pdnc_doomsday_start < 0.0) then
 		pdnc_max_brightness = 0.5 -- if not doomsday, eternal night
 	end
 end

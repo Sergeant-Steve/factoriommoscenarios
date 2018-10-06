@@ -92,7 +92,7 @@ function pdnc_program()
 	local returnvalue = 0
 	local radius = 512 --make global
 	if (global.pdnc_doomsday_start < 0.0) then
-		returnvalue = pdnc_c_boxy(returnvalue)
+		returnvalue = pdnc_c_boxy(x)
 	elseif (global.current_time < global.pdnc_doomsday_start) then
 		returnvalue = math.pow(pdnc_c_boxy(x), (1 + global.current_time / 4))
 		-- days become shorter over time towards n^6.125
